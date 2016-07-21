@@ -4,8 +4,6 @@ import "google/protobuf/timestamp.proto";
 
 package account;
 
-option go_package = "github.com/golang/protobuf/ptypes/timestamp";
-
 message SubscriptionTokenInfo {
     string subscriptionToken = 1;              // Subscription token
     google.protobuf.Timestamp activatedDateTime = 2;           // Subscription Activated date
