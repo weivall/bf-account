@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package account;
+
+option go_package = "github.com/golang/protobuf/ptypes/timestamp";
+
+message SubscriptionTokenInfo {
+    string subscriptionToken = 1;              // Subscription token
+    google.protobuf.Timestamp activatedDateTime = 2;           // Subscription Activated date
+    google.protobuf.Timestamp expiryDateTime = 3;              // Subscription Expiry date
+    google.protobuf.Timestamp expiredDateTime = 4;             // Subscription Expired date
+    google.protobuf.Timestamp cancellationDateTime = 5;        // Subscription Cancelled date
+    SubscriptionStatus subscriptionStatus = 6; // Subscription status
+}
+
+message AccountSubscription {
+    repeated SubscriptionTokenInfo subscriptionTokens = 1; // List of subscription token details
+    string applicationName = 2;                            // Application name
+    string applicationVersionId = 3;                       // Application version Id
+}
+
+message CurrencyRate {
+    string currencyCode = 1;  // Three letter ISO 4217 code
+    float rate = 2;           // Exchange rate for the currency specified in the request
+}
+
+message AccountFundsResponse {
+    float availableToBetBalance = 1; // Amount available to bet.
+    float exposure = 2;              // Current exposure.
+    float retainedCommission = 3;    // Sum of retained commission.
+    float exposureLimit = 4;         // Exposure limit.
+    float discountRate = 5;          // User Discount Rate.
+    int32 pointsBalance = 6;         // The Betfair points balance
+}
+
+message DeveloperAppVersion {
+    string owner = 1;               // The sportex user who owns the specific version of the application
+    int64 versionId = 2;            // The unique Id of the application version
+    string version = 3;             // The version identifier string such as 1.0, 2.0. Unique for a given application.
+    string applicationKey = 4;      // The unqiue application key associated with this application version
+    bool delayData = 5;             // Indicates whether the data exposed by platform services as seen by this application key is delayed or realtime.
+    bool subscriptionRequired = 6;  // Indicates whether the application version needs explicit subscription
+    bool ownerManaged = 7;          // Indicates whether the application version needs explicit management by the software owner. A value of true indicates, this is a version meant for personal developer use.
+    bool active = 8;                // Indicates whether the application version is currently active
+}
+
+message StatementLegacyData {
+    float avgPrice = 1;            // The average matched price of the bet (null if no part has been matched)
+    float betSize = 2;             // The amount of the stake of your bet. (0 for commission payments or deposit/withdrawals)
+    string betType = 3;            // Back or lay
+    string betCategoryType = 4;    // Exchange, Market on Close SP bet, or Limit on Close SP bet.
+    string commissionRate = 5;     // Commission rate on market
+    int32 eventId = 6;             // Please note: this is the Id of the market without the associated exchangeId
+    int32 eventTypeId = 7;         // Event Type
+    string fullMarketName = 8;     // Full Market Name. For card payment items, this field contains the card name
+    float grossBetAmount = 9;      // Gross Bet Amount
+    string marketName = 10;        // Market Name. For card transactions, this field indicates the message of card transaction (deposit, deposit fee, or withdrawal).
+    string marketType = 11;        // Market message - please see Chapter 61. For account deposits and withdrawals, marketType is set to NOT_APPLICABLE.
+    google.protobuf.Timestamp placedDate = 12;     // time and time of bet placement
+    int32 selectionId = 13;        // Id of the selection (this will be the same for the same selection across markets)
+    string selectionName = 14;     // Name of the selection
+    google.protobuf.Timestamp startDate = 15;
+    string transactionType = 16;
+    int32 transactionId = 17;
+    WinLose winLose = 18;
+
+    enum WinLose {
+        RESULT_ERR = 0;             // Internal error
+        RESULT_FIX = 1;             // Result has been updated after an initial state. i.e. your account history has been changed to reflect this.
+        RESULT_LOST = 2;            // Loss
+        RESULT_NOT_APPLICABLE = 3;  // Include poker transactions only
+        RESULT_WON = 4;             // Won
+        COMMISSION_REVERSAL = 5;    // Betfair have restored the funds to your account that it previously received from you in commission.
+    }
+
+}
+
+message TransferResponse {
+    string transactionId = 1; // The id of the transfer transaction that will be used in tracking the transfers between the wallets
+}
+
+message AccountDetailsResponse {
+    string currencyCode = 1;  // Default user currency Code.
+    string firstName = 2;     // First Name.
+    string lastName = 3;      // Last Name.
+    string localeCode = 4;    // Locale Code.
+    string region = 5;        // Region based on users zip/postcode (ISO 3166-1 alpha-3 format). Defaults to GBR if zip/postcode cannot be identified.
+    string timezone = 6;      // User time Zone.
+    float discountRate = 7;   // User Discount Rate.
+    int32 pointsBalance = 8;  // The Betfair points balance.
+    string countryCode = 9;   // The customer's country of residence (ISO 2 Char format)
+}
+
+message ApplicationSubscription {
+    string subscriptionToken = 1;              // Application key identifier
+    google.protobuf.Timestamp expiryDateTime = 2;              // Subscription Expiry date
+    google.protobuf.Timestamp expiredDateTime = 3;             // Subscription Expired date
+    google.protobuf.Timestamp createdDateTime = 4;             // Subscription Create date
+    google.protobuf.Timestamp activationDateTime = 5;          // Subscription Activation date
+    google.protobuf.Timestamp cancellationDateTime = 6;        // Subscription Cancelled date
+    SubscriptionStatus subscriptionStatus = 7; // Subscription status
+    string clientReference = 8;
+    string vendorClientId = 9;
+}
+
+message AccountStatementReport {
+    repeated StatementItem accountStatement = 1; // The list of statement items returned by your request.
+    bool moreAvailable = 2;                      // Indicates whether there are further result items beyond this page.
+}
+
+message StatementItem {
+    string refId = 1;                        // An external reference, eg. equivalent to betId in the case of an exchange bet statement item.
+    google.protobuf.Timestamp itemDate = 2;                  // The date and time of the statement item, eg. equivalent to settledData for an exchange bet statement item. (in ISO-8601 format, not translated)
+    float amount = 3;                        // The amount of money the balance is adjusted by
+    float balance = 4;                       // Account balance.
+    ItemClass itemClass = 5;                 // Class of statement item. This value will determine which set of keys will be included in itemClassData
+    map<string, string> itemClassData = 6;   // Key value pairs describing the current statement item. The set of keys will be determined by the itemClass
+    StatementLegacyData legacyData = 7;      // Set of fields originally returned from APIv6. Provided to facilitate migration from APIv6 to API-NG, and ultimately onto itemClass and itemClassData
+}
+
+message DeveloperApp {
+    string appName = 1;                           // The unique name of the application
+    string appId = 2;                             // A unique id of this application
+    repeated DeveloperAppVersion appVersions = 3; // The application versions (including application keys)
+}
+
+message TimeRange {
+    google.protobuf.Timestamp from = 1; // from, format: ISO 8601
+    google.protobuf.Timestamp to = 2;   // to, format: ISO 8601
+}
+
+message SubscriptionHistory {
+    string subscriptionToken = 1;              // Application key identifier
+    google.protobuf.Timestamp expiryDateTime = 2;              // Subscription Expiry date
+    google.protobuf.Timestamp expiredDateTime = 3;             // Subscription Expired date
+    google.protobuf.Timestamp createdDateTime = 4;             // Subscription Create date
+    google.protobuf.Timestamp activationDateTime = 5;          // Subscription Activation date
+    google.protobuf.Timestamp cancellationDateTime = 6;        // Subscription Cancelled date
+    SubscriptionStatus subscriptionStatus = 7; // Subscription status
+    string clientReference = 8;
+}
+
+// enum IncludeItem {
+//    ALL = 0;
+//    DEPOSITS_WITHDRAWALS = 1;
+//    EXCHANGE = 2;
+//    POKER_ROOM = 3;
+//}
+
+enum Exception {
+    INVALID_INPUT_DATA = 0;
+    INVALID_SESSION_INFORMATION = 1;
+    UNEXPECTED_ERROR = 2;
+    INVALID_APP_KEY = 3;
+    SERVICE_BUSY = 4;
+    TIMEOUT_ERROR = 5;
+    DUPLICATE_APP_NAME = 6;
+    APP_KEY_CREATION_FAILED = 7;
+    APP_CREATION_FAILED = 8;
+    NO_SESSION = 9;
+    NO_APP_KEY = 10;
+    SUBSCRIPTION_EXPIRED = 11;
+    INVALID_SUBSCRIPTION_TOKEN = 12;
+    TOO_MANY_REQUESTS = 13;
+    INVALID_CLIENT_REF = 14;
+    WALLET_TRANSFER_ERROR = 15;
+    INVALID_VENDOR_CLIENT_ID = 16;
+}
+
+enum LoginStatus {
+    ACCOUNT_ALREADY_LOCKED = 0;
+    ACCOUNT_NOW_LOCKED = 1;
+    ACCOUNT_PENDING_PASSWORD_CHANGE = 2;
+    AGENT_CLIENT_MASTER = 3;
+    AGENT_CLIENT_MASTER_SUSPENDED = 4;
+    BETTING_RESTRICTED_LOCATION = 5;
+    CERT_AUTH_REQUIRED = 6;
+    CHANGE_PASSWORD_REQUIRED = 7;
+    CLOSED = 8;
+    DANISH_AUTHORIZATION_REQUIRED = 9;
+    DENMARK_MIGRATION_REQUIRED = 10;
+    DUPLICATE_CARDS = 11;
+    EMAIL_LOGIN_NOT_ALLOWED = 12;
+    INTERNATIONAL_TERMS_ACCEPTANCE_REQUIRED = 13;
+    INVALID_CONNECTIVITY_TO_REGULATOR_DK = 14;
+    INVALID_CONNECTIVITY_TO_REGULATOR_IT = 15;
+    INVALID_USERNAME_OR_PASSWORD = 16;
+    ITALIAN_CONTRACT_ACCEPTANCE_REQUIRED = 17;
+    KYC_SUSPEND = 18;
+    MULTIPLE_USERS_WITH_SAME_CREDENTIAL = 19;
+    NOT_AUTHORIZED_BY_REGULATOR_DK = 20;
+    NOT_AUTHORIZED_BY_REGULATOR_IT = 21;
+    PENDING_AUTH = 22;
+    PERSONAL_MESSAGE_REQUIRED = 23;
+    SECURITY_QUESTION_WRONG_3X = 24;
+    SECURITY_RESTRICTED_LOCATION = 25;
+    SELF_EXCLUDED = 26;
+    SPAIN_MIGRATION_REQUIRED = 27;
+    SPANISH_TERMS_ACCEPTANCE_REQUIRED = 28;
+    SUSPENDED = 29;
+    TELBET_TERMS_CONDITIONS_NA = 30;
+    TRADING_MASTER = 31;
+    TRADING_MASTER_SUSPENDED = 32;
+}
+
+enum SubscriptionStatus {
+    ACTIVATED = 0;
+    UNACTIVATED = 1;
+    CANCELLED = 2;
+    EXPIRED = 3;
+    ALL = 4;
+}
+
+enum Status {
+    SUCCESS = 0;
+}
+
+enum Wallet {
+    UK = 0;
+    AUSTRALIAN = 1;
+}
+
+enum ItemClass {
+    UNKNOWN = 0;
+}
+
+
