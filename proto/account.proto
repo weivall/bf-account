@@ -61,7 +61,7 @@ message StatementLegacyData {
     string selectionName = 14;     // Name of the selection
     google.protobuf.Timestamp startDate = 15;
     string transactionType = 16;
-    int32 transactionId = 17;
+    uint64 transactionId = 17;
     WinLose winLose = 18;
 
     enum WinLose {
