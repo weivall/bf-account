@@ -114,6 +114,7 @@ message AccountStatementRequest {
     int32 recordCount = 3;
     TimeRange itemDateRange = 4;
     IncludeItem includeItem = 5;
+    Wallet wallet = 6;
 
     enum IncludeItem {
         ALL = 0;
