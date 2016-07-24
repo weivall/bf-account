@@ -19,14 +19,9 @@ message AccountSubscription {
     string applicationVersionId = 3;                       // Application version Id
 }
 
-message CurrencyRateList {
-
-    repeated CurrencyRate rates = 1;
-
-    message CurrencyRate {
-        string currencyCode = 1;  // Three letter ISO 4217 code
-        float rate = 2;           // Exchange rate for the currency specified in the request
-    }
+message CurrencyRate {
+    string currencyCode = 1;  // Three letter ISO 4217 code
+    float rate = 2;           // Exchange rate for the currency specified in the request
 }
 
 message AccountFundsResponse {
