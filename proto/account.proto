@@ -108,6 +108,21 @@ message AccountStatementReport {
     bool moreAvailable = 2;                      // Indicates whether there are further result items beyond this page.
 }
 
+message AccountStatementRequest {
+    string locale = 1;
+    int32 fromRecord = 2;
+    int32 recordCount = 3;
+    TimeRange itemDateRange = 4;
+    IncludeItem includeItem = 5;
+
+    enum IncludeItem {
+        ALL = 0;
+        DEPOSITS_WITHDRAWALS = 1;
+        EXCHANGE = 2;
+        POKER_ROOM = 3;
+    }
+}
+
 message StatementItem {
     string refId = 1;                        // An external reference, eg. equivalent to betId in the case of an exchange bet statement item.
     google.protobuf.Timestamp itemDate = 2;                  // The date and time of the statement item, eg. equivalent to settledData for an exchange bet statement item. (in ISO-8601 format, not translated)
@@ -139,13 +154,6 @@ message SubscriptionHistory {
     SubscriptionStatus subscriptionStatus = 7; // Subscription status
     string clientReference = 8;
 }
-
-// enum IncludeItem {
-//    ALL = 0;
-//    DEPOSITS_WITHDRAWALS = 1;
-//    EXCHANGE = 2;
-//    POKER_ROOM = 3;
-//}
 
 enum Exception {
     INVALID_INPUT_DATA = 0;
