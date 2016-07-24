@@ -108,6 +108,10 @@ message AccountStatementReport {
     bool moreAvailable = 2;                      // Indicates whether there are further result items beyond this page.
 }
 
+message AccountFundsRequest {
+    Wallet wallet = 6;
+}
+
 message AccountStatementRequest {
     string locale = 1;
     int32 fromRecord = 2;
