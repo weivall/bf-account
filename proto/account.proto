@@ -31,6 +31,7 @@ message AccountFundsResponse {
     float exposureLimit = 4;         // Exposure limit.
     float discountRate = 5;          // User Discount Rate.
     int32 pointsBalance = 6;         // The Betfair points balance
+    Wallet wallet = 7;
 }
 
 message DeveloperAppVersion {
